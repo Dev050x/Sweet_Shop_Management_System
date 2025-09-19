@@ -102,5 +102,24 @@ describe("Sweet Delete Flow", () => {
 
   });
 
+  // ---------------- Controller tests ----------------
+  describe("Controller + Integration", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should successfully delete sweet and return correct response", async () => {
+      (sweetService.deleteSweet as Mock).mockResolvedValueOnce(mockDeletedSweet);
+
+      const res = await request(app)
+        .delete("/api/sweets/1")
+        .set("Authorization", validAdminToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("Sweet deleted successfully");
+      expect(res.body.sweet).toBeUndefined(); // Delete doesn't return sweet data
+    });
+
+  });
+
 
 });

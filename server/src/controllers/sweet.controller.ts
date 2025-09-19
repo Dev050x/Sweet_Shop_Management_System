@@ -119,7 +119,7 @@ export const deleteSweet = async (req: Request, res: Response, next: NextFunctio
     const id = Number(req.params.id);
 
     await sweetService.deleteSweet(id);
-
+    
   } catch (error) {
     next(error); 
   }
