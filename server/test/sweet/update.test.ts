@@ -153,6 +153,31 @@ describe("Sweet Update Flow", () => {
     });
   });
 
+  // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should call updateSweet service with correct parameters", async () => {
+      (sweetService.updateSweet as Mock).mockResolvedValueOnce(mockUpdatedSweet);
+
+      const updateData = {
+        name: "New Chocolate Name",
+        category: "CHOCOLATE" as SweetCategory,
+        price: 15.99,
+        quantity: 10,
+      };
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", validAdminToken)
+        .send(updateData);
+
+      expect(sweetService.updateSweet).toHaveBeenCalledWith(1, updateData);
+      expect(sweetService.updateSweet).toHaveBeenCalledTimes(1);
+    });
+
+    });
+
 
 
 });
