@@ -49,3 +49,8 @@ export const updateSweet = async (id: number, data: SweetUpdateInput) => {
     data,
   });
 };
+
+//delete sweets
+export const deleteSweet = async (id: number) => {
+
+};

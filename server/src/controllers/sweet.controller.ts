@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
 
+
 //add sweet controller
 export const addSweet = async (req: Request, res: Response, next: NextFunction) => {
    try {
@@ -114,5 +115,9 @@ export const updateSweet = async (req: Request, res: Response, next: NextFunctio
 
 //deleting the sweets(only admin)
 export const deleteSweet = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("request received");
+  const id = Number(req.params.id);
+  sweetService.deleteSweet(id);
+  return res.json({
+    success:true,
+  })
 };
