@@ -171,6 +171,33 @@ describe("Get All Sweets Flow", () => {
       expect(res.body.sweets).toEqual([]);
     });
 
+    it("should work with different user roles", async () => {
+      // Test with ADMIN role
+      (jwt.verify as Mock).mockReturnValueOnce({ userId: "admin123", role: "ADMIN" });
+      
+      const mockSweets = [
+        {
+          id: "sweet1",
+          name: "Admin Sweet",
+          category: "CAKE" as SweetCategory,
+          price: 25.0,
+          quantity: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ];
+
+      (sweetService.getAllSweets as Mock).mockResolvedValueOnce(mockSweets);
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Sweets fetched successfully");
+      expect(res.body.sweets).toHaveLength(1);
+    });
+
   });
 
 
