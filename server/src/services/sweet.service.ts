@@ -7,3 +7,9 @@ export const addSweet = async (name: string, category: SweetCategory, price: num
     data: { name, category, price, quantity },
   });
 };
+
+
+// get all sweets
+export const getAllSweets = async () => {
+  
+};
