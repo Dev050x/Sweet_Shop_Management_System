@@ -137,4 +137,6 @@ export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextF
 
     // validate purchase body
     const validatedData = sweetPurchaseSchema.parse(req.body);
+
+    await sweetService.purchaseSweet(id, validatedData.quantity, req.user!.userId);
 };

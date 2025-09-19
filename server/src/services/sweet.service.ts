@@ -59,3 +59,9 @@ export const deleteSweet = async (id: number) => {
     where: { id },
   });
 };
+
+
+//purchase sweets
+export const purchaseSweet = async (id: number, quantity: number, userId: number) => {
+
+};
