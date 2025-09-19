@@ -2,6 +2,17 @@
 import request from "supertest";
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import app from "../../src/index";
+import * as service from "../../src/services/auth.service";
+import { prisma } from "../../src/utils/prisma";
+
+// mock prisma
+vi.mock("../../src/utils/prisma", () => ({
+  prisma: {
+    user: {
+      findUnique: vi.fn(),
+    },
+  },
+}));
 
 describe("Auth Login Flow", () => {
   beforeEach(() => {
@@ -26,6 +37,15 @@ describe("Auth Login Flow", () => {
       });
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
+    });
+  });
+
+  // ---------------- Service layer ----------------
+  describe("Service layer", () => {
+    it("should throw error if user not found", async () => {
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce(null);
+      await expect(service.loginUser("div@example.com", "StrongP@ss1"))
+        .rejects.toThrow("User not found");
     });
   });
 
