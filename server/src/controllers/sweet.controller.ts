@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { sweetPurchaseSchema, sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
+import { sweetPurchaseSchema, sweetRestockSchema, sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
@@ -154,5 +154,5 @@ export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextF
 
 //restocking (only admin)
 export const restockSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  console.log("received request");
+  const validatedData = sweetRestockSchema.parse(req.body);
 };

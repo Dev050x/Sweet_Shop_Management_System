@@ -36,3 +36,8 @@ export type SweetUpdateInput = z.infer<typeof sweetUpdateSchema>;
 export const sweetPurchaseSchema = z.object({
   quantity: z.number().int().positive("Quantity must be at least 1"),
 }).strict();
+
+
+export const sweetRestockSchema = z.object({
+  quantity: z.number().int().positive("Quantity must be at least 1"),
+}).strict();
