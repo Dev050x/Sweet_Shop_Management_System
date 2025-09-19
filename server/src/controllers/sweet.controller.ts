@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
+import { sweetPurchaseSchema, sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
@@ -133,5 +133,8 @@ export const deleteSweet = async (req: Request, res: Response, next: NextFunctio
 
 //purchase sweet handler
 export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  console.log("received request");
+   const id = Number(req.params.id);
+
+    // validate purchase body
+    const validatedData = sweetPurchaseSchema.parse(req.body);
 };
