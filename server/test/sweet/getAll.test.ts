@@ -198,11 +198,19 @@ describe("Get All Sweets Flow", () => {
       expect(res.body.sweets).toHaveLength(1);
     });
 
+    it("should return 500 for unexpected service errors", async () => {
+      (sweetService.getAllSweets as Mock).mockRejectedValueOnce(
+        new Error("Unexpected database error")
+      );
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("internal server error");
+    });
+   });
   });
-
-
-   });
-
-   });
-  
+ }); 
 });
