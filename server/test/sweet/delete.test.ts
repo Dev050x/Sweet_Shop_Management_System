@@ -33,6 +33,18 @@ describe("Sweet Delete Flow", () => {
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe("No token provided");
     });
+
+    it("should fail when user is not admin", async () => {
+      (jwt.verify as Mock).mockReturnValueOnce({ userId: "user123", role: "USER" });
+
+      const res = await request(app)
+        .delete("/api/sweets/1")
+        .set("Authorization", "Bearer user.token");
+
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe("Forbidden: Admins only");
+    });
+
   });
 
 });
