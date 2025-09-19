@@ -158,6 +158,19 @@ describe("Get All Sweets Flow", () => {
         quantity: 10,
       });
     });
+
+    it("should return empty array when no sweets exist", async () => {
+      (sweetService.getAllSweets as Mock).mockResolvedValueOnce([]);
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Sweets fetched successfully");
+      expect(res.body.sweets).toEqual([]);
+    });
+
   });
 
 
