@@ -92,8 +92,10 @@ export const updateSweet = async (req: Request, res: Response, next: NextFunctio
 
   // validate update body
   const validatedData = sweetUpdateSchema.safeParse(req.body);
-    if (!validatedData.success) {
-      return next(validatedData.error);
+  if (!validatedData.success) {
+    return next(validatedData.error);
   }
+
+    
 
 };

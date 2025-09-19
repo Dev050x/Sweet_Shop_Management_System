@@ -30,3 +30,5 @@ export const sweetUpdateSchema = z.object({
   quantity: z.number().int().positive("Quantity must be at least 1").optional(),
   price: z.number().positive("Price must be greater than 0").optional(),
 }).strict();
+
+export type SweetUpdateInput = z.infer<typeof sweetUpdateSchema>;

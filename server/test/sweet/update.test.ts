@@ -175,6 +175,22 @@ describe("Sweet Update Flow", () => {
       expect(sweetService.updateSweet).toHaveBeenCalledWith(1, updateData);
       expect(sweetService.updateSweet).toHaveBeenCalledTimes(1);
     });
+    
+    it("should handle service layer errors (sweet not found)", async () => {
+      (sweetService.updateSweet as Mock).mockRejectedValueOnce(
+        new Error("Sweet not found")
+      );
+
+      const res = await request(app)
+        .put("/api/sweets/999")
+        .set("Authorization", validAdminToken)
+        .send({
+          name: "Updated Sweet",
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(500);
+    });
 
     });
 

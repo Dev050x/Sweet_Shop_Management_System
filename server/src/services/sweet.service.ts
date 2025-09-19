@@ -1,5 +1,6 @@
 import {prisma} from "../utils/prisma";
 import { SweetCategory } from "@prisma/client";
+import { SweetUpdateInput } from "../schema/sweet.schema";
 
 
 //add sweets 
@@ -39,6 +40,12 @@ export const searchSweets = async (
 
 
 //update sweets details(name/category only)
-export const updateSweet = async () => {
+export const updateSweet = async (id: number, data: SweetUpdateInput) => {
+  const sweet = await prisma.sweet.findUnique({ where: { id } });
+  if (!sweet) throw new Error("Sweet not found");
 
+  return prisma.sweet.update({
+    where: { id },
+    data,
+  });
 };
