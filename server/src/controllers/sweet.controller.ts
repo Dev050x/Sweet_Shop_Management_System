@@ -64,6 +64,15 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
       validatedQuery.data.maxPrice
     );
 
+    if(sweets.length == 0) {
+        return res.json({
+            success:true,
+            message:"there is no sweets",
+            sweets:[]
+        })
+    }
+
+
   } catch (error) {
   }
 };
