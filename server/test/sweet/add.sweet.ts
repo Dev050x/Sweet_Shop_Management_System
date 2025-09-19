@@ -59,6 +59,27 @@ describe("Sweet Add Flow", () => {
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe("Invalid or expired token");
     });
+
+  // ---------------- Schema validation ----------------
+  describe("Schema validation", () => {
+    const validToken = "Bearer valid.jwt.token";
+
+    it("should fail if name is too short", async () => {
+      const res = await request(app)
+        .post("/api/sweets")
+        .set("Authorization", validToken)
+        .send({
+          name: "A", // Too short
+          category: "CHOCOLATE",
+          price: 10.5,
+          quantity: 5,
+        });
+      
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+  });
+
   });
 
   
