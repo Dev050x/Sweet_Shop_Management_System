@@ -106,6 +106,62 @@ describe("Auth Login Flow", () => {
 
   });
 
+  // ---------------- Controller + middleware ----------------
+  describe("Controller + middleware", () => {
+    it("should login successfully", async () => {
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce({
+        id: "2",
+        email: "div@example.com",
+        password: "hashedPass",
+        role: "USER",
+      });
+      (bcrypt.compare as Mock).mockResolvedValueOnce(true);
+      (jwt.sign as Mock).mockReturnValueOnce("controller.jwt.token");
+
+      const res = await request(app).post("/api/auth/login").send({
+        email: "div@example.com",
+        password: "StrongP@ss1",
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Login successful");
+      expect(res.body.token).toBe("controller.jwt.token");
+    });
+
+    it("should return 400 for schema errors", async () => {
+      const res = await request(app).post("/api/auth/login").send({
+        email: "invalid",
+        password: "123",
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe("invalid request body");
+    });
+
+    it("should return 401 for when user not found", async () => {
+      // Mock user not found scenario
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce(null);
+
+      const res = await request(app).post("/api/auth/login").send({
+        email: "div@example.com",
+        password: "StrongP@ss1",
+      });
+      console.log(res.body);
+      expect(res.status).toBe(401);
+      expect(res.body.success).toBe(false);
+    });
+
+    it("should return 500 for unexpected errors", async () => {
+      (prisma.user.findUnique as Mock).mockImplementationOnce(() => {
+        throw new Error("DB crashed");
+      });
+
+      const res = await request(app).post("/api/auth/login").send({
+        email: "div@example.com",
+        password: "StrongP@ss1",
+      });
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("internal server error");
+    });
+  });
 
 
 });

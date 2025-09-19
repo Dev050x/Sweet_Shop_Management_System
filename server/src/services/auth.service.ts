@@ -1,5 +1,8 @@
 import {prisma} from "../utils/prisma";
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 export const registerUser = async (name: string, email: string, password: string) => {
   
@@ -22,5 +25,13 @@ export const loginUser = async (email: string, password: string) => {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("wrong password");
+
+  // generating jsonwebtoken
+  return jwt.sign(
+    { userId: user.id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+
 
 };
