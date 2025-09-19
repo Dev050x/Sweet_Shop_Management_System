@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
 
 //add sweet controller
@@ -128,4 +129,9 @@ export const deleteSweet = async (req: Request, res: Response, next: NextFunctio
   } catch (error) {
     next(error); 
   }
+};
+
+//purchase sweet handler
+export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  console.log("received request");
 };
