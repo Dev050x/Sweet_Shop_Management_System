@@ -128,5 +128,23 @@ describe("Sweet Search Flow", () => {
     });
   });
 
+  // ---------------- Controller + Integration tests ----------------
+  describe("Controller + Integration", () => {
+    const validToken = "Bearer valid.jwt.token";
+
+    it("should return appropriate message when no sweets found", async () => {
+      (sweetService.searchSweets as Mock).mockResolvedValueOnce([]);
+
+      const res = await request(app)
+        .get("/api/sweets/search?name=nonexistent")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("there is no sweets");
+      expect(res.body.sweets.length).toBe(0);
+    });
+  });
+
+
 
 });
