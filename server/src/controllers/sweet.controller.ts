@@ -119,7 +119,12 @@ export const deleteSweet = async (req: Request, res: Response, next: NextFunctio
     const id = Number(req.params.id);
 
     await sweetService.deleteSweet(id);
-    
+
+    res.json({
+      success:true,
+      message: "Sweet deleted successfully",
+    });
+
   } catch (error) {
     next(error); 
   }
