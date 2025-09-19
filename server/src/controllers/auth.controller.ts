@@ -45,6 +45,11 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       validatedData.data.password
     );
 
+    return res.json({
+      message: "Login successful",
+      token,
+    });
+
   } catch (error) {
     next(error); 
   }
