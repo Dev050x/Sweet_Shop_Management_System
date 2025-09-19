@@ -35,5 +35,11 @@ export const addSweet = async (req: Request, res: Response, next: NextFunction) 
 
 //get all sweets handler
 export const getAllSweets = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("receiving request");
+  try {
+    const sweets = await sweetService.getAllSweets();
+    
+
+  } catch (error) {
+    next(error); 
+  }
 };

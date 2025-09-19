@@ -11,5 +11,7 @@ export const addSweet = async (name: string, category: SweetCategory, price: num
 
 // get all sweets
 export const getAllSweets = async () => {
-  
+  return prisma.sweet.findMany({
+    orderBy: { createdAt: "desc" }, 
+  });
 };

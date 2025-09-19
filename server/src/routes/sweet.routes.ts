@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addSweet } from "../controllers/sweet.controller";
+import { addSweet, getAllSweets } from "../controllers/sweet.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 
