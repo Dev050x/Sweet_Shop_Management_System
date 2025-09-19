@@ -3,7 +3,7 @@ import request from "supertest";
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import app from "../../src/index";
 import { prisma } from "../../src/utils/prisma";
-
+import * as service from "../../src/services/auth.service";
 
 describe("Auth Registration Test", () => {
   beforeEach(() => {
@@ -43,5 +43,17 @@ describe("Auth Registration Test", () => {
     });
 
   });
+
+
+  describe("Service layer", () => {
+
+    it("should throw error if email already exists", async () => {
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce({ id: "1", email: "div@example.com" });
+      await expect(service.registerUser("Div", "div@example.com", "StrongP@ss1"))
+        .rejects.toThrow("Email already registered");
+    });
+
+  });
+
 
 });
