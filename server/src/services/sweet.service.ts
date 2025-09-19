@@ -23,5 +23,15 @@ export const searchSweets = async (
   minPrice?: number,
   maxPrice?: number
 ) => {
-
+  return prisma.sweet.findMany({
+    where: {
+      AND: [
+        name ? { name: { contains: name, mode: "insensitive" } } : {},
+        category ? { category: category } : {},
+        minPrice !== undefined ? { price: { gte: minPrice } } : {},
+        maxPrice !== undefined ? { price: { lte: maxPrice } } : {},
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+  });
 };
