@@ -115,6 +115,52 @@ describe("Get All Sweets Flow", () => {
       expect(res.body.message).toBe("internal server error");
     });
 
+     // ---------------- Controller + Integration tests ----------------
+  describe("Controller + Integration", () => {
+    const validToken = "Bearer valid.jwt.token";
+
+    it("should successfully get all sweets and return correct response", async () => {
+      const mockSweets = [
+        {
+          id: "sweet1",
+          name: "Chocolate Delight",
+          category: "CHOCOLATE" as SweetCategory,
+          price: 15.99,
+          quantity: 10,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "sweet2",
+          name: "Gummy Bears",
+          category: "CANDY" as SweetCategory,
+          price: 8.50,
+          quantity: 25,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ];
+
+      (sweetService.getAllSweets as Mock).mockResolvedValueOnce(mockSweets);
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Sweets fetched successfully");
+      expect(res.body.sweets).toHaveLength(2);
+      expect(res.body.sweets[0]).toMatchObject({
+        id: "sweet1",
+        name: "Chocolate Delight",
+        category: "CHOCOLATE",
+        price: 15.99,
+        quantity: 10,
+      });
+    });
+  });
+
+
    });
 
    });
