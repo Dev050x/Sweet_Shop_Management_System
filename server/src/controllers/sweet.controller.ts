@@ -79,5 +79,8 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
     });
 
   } catch (error) {
+    next(error)
   }
+
+
 };
