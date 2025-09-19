@@ -14,8 +14,18 @@ vi.mock("jsonwebtoken", () => ({
 }));
 
 
+// mock prisma
+vi.mock("../../src/utils/prisma", () => ({
+  prisma: {
+    sweet: {
+      findUnique: vi.fn(),
+      delete: vi.fn(),
+    },
+  },
+}));
 
-import { prisma } from "../../src/utils/prisma";
+
+
 import jwt from "jsonwebtoken";
 
 describe("Get All Sweets Flow", () => {
@@ -24,6 +34,8 @@ describe("Get All Sweets Flow", () => {
     // Set default JWT behavior for auth middleware
     (jwt.verify as Mock).mockReturnValue({ userId: "user123", role: "USER" });
   });
+
+  
 
   // ---------------- Auth middleware tests ----------------
   describe("Authentication middleware", () => {
@@ -49,6 +61,44 @@ describe("Get All Sweets Flow", () => {
       expect(res.body.success).toBe(false);
       expect(res.body.message).toBe("Invalid or expired token");
     });
-  });
+
+    // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validToken = "Bearer valid.jwt.token";
+
+    it("should call getAllSweets service", async () => {
+      const mockSweets = [
+        {
+          id: "sweet1",
+          name: "Chocolate Bar",
+          category: "CHOCOLATE" as SweetCategory,
+          price: 10.5,
+          quantity: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "sweet2",
+          name: "Candy Cane",
+          category: "CANDY" as SweetCategory,
+          price: 5.0,
+          quantity: 10,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ];
+
+      (sweetService.getAllSweets as Mock).mockResolvedValueOnce(mockSweets);
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(sweetService.getAllSweets).toHaveBeenCalledTimes(1);
+      expect(sweetService.getAllSweets).toHaveBeenCalledWith();
+    });
+   });
+
+   });
   
 });
