@@ -55,5 +55,40 @@ describe("Sweet Update Flow", () => {
     });
   });
 
+  // ---------------- Admin authorization tests ----------------
+  describe("Admin authorization", () => {
+    it("should fail when user is not admin", async () => {
+      (jwt.verify as Mock).mockReturnValueOnce({ userId: "user123", role: "USER" });
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", "Bearer user.token")
+        .send({
+          name: "Updated Sweet",
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(403);
+      expect(res.body.error).toBe("Forbidden: Admins only");
+    });
+
+    it("should pass when user is admin", async () => {
+      (jwt.verify as Mock).mockReturnValueOnce({ userId: "admin123", role: "ADMIN" });
+      (sweetService.updateSweet as Mock).mockResolvedValueOnce(mockUpdatedSweet);
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", "Bearer admin.token")
+        .send({
+          name: "Updated Sweet",
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
+  });
+
+
 
 });
