@@ -84,5 +84,51 @@ describe("Auth Registration Test", () => {
 
   });
 
+  describe("Controller + middleware", () => {
+    it("should register successfully", async () => {
+      // Set up mocks separately
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce(null);
+      (prisma.user.create as Mock).mockResolvedValueOnce({ id: "2", name: "Div", email: "div@example.com", role: "USER" });
+
+      const res = await request(app).post("/api/auth/register").send({
+        name: "Div",
+        email: "div@example.com",
+        password: "StrongP@ss1"
+      });
+      expect(res.status).toBe(201);
+      expect(res.body.success).toBe(true);
+      expect(res.body.user).toMatchObject({
+        id: "2",
+        name: "Div",
+        email: "div@example.com",
+        role: "USER"
+      });
+    });
+
+    it("should return 409 if duplicate email", async () => {
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce({ id: "2", email: "div@example.com" });
+
+      const res = await request(app).post("/api/auth/register").send({
+        name: "Div",
+        email: "div@example.com",
+        password: "StrongP@ss1"
+      });
+      expect(res.status).toBe(409);
+      expect(res.body.message).toBe("Email already registered");
+    });
+
+    it("should return 500 for unexpected errors", async () => {
+      (prisma.user.findUnique as Mock).mockImplementationOnce(() => { throw new Error("DB crashed"); });
+
+      const res = await request(app).post("/api/auth/register").send({
+        name: "Div",
+        email: "div@example.com",
+        password: "StrongP@ss1"
+      });
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("internal server error");
+    });
+  });
+
 
 });
