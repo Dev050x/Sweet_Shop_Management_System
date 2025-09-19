@@ -37,6 +37,17 @@ describe("Sweet Update Flow", () => {
     (jwt.verify as Mock).mockReturnValue({ userId: "admin123", role: "ADMIN" });
   });
 
+  // Mock sweet data for testing
+  const mockUpdatedSweet = {
+    id: 1,
+    name: "Updated Chocolate",
+    category: "CHOCOLATE" as SweetCategory,
+    price: 12.99,
+    quantity: 8,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
   // ---------------- Auth middleware tests ----------------
   describe("Authentication middleware for admin", () => {
     it("should fail without authorization header", async () => {
@@ -99,6 +110,46 @@ describe("Sweet Update Flow", () => {
           quantity: 5,
         });
       expect(res.body.success).toBe(true);
+    });
+  });
+
+  // ---------------- Schema validation ----------------
+  describe("Schema validation", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should accept valid update data with all fields", async () => {
+      (sweetService.updateSweet as Mock).mockResolvedValueOnce(mockUpdatedSweet);
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", validAdminToken)
+        .send({
+          name: "Updated Chocolate",
+          category: "CHOCOLATE",
+          price: 12.99,
+          quantity: 8,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(sweetService.updateSweet).toHaveBeenCalledWith(1, {
+        name: "Updated Chocolate",
+        category: "CHOCOLATE",
+        price: 12.99,
+        quantity: 8,
+      });
+    });
+
+    it("should fail with invalid data (negative quantity)", async () => {
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", validAdminToken)
+        .send({
+          name: "Test Sweet",
+          quantity: -5, // Invalid negative quantity
+        });
+
+      expect(res.status).toBe(400);
     });
   });
 
