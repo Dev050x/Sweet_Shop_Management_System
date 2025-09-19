@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { sweetSchema, sweetSearchSchema } from "../schema/sweet.schema";
+import { sweetSchema, sweetSearchSchema, sweetUpdateSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
 
 //add sweet controller
@@ -88,5 +88,12 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
 
 //updating sweet detail()
 export const updateSweet = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("request received");
+  const id = Number(req.params.id);
+
+  // validate update body
+  const validatedData = sweetUpdateSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      return next(validatedData.error);
+  }
+
 };

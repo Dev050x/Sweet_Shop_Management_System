@@ -23,3 +23,10 @@ export const sweetSearchSchema = z.object({
     .transform(Number)
     .optional(),
 });
+
+export const sweetUpdateSchema = z.object({
+  name: z.string().min(2, "Sweet name must be at least 2 characters").optional(),
+  category: z.enum(SweetCategory).optional(),
+  quantity: z.number().int().positive("Quantity must be at least 1").optional(),
+  price: z.number().positive("Price must be greater than 0").optional(),
+}).strict();
