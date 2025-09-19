@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { registerSchema } from "../schema/auth.schema";
+import { loginSchema, registerSchema } from "../schema/auth.schema";
 import * as service from "../services/auth.service";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,6 +25,20 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         role: user.role,
       },
     });
+
+  } catch (error) {
+    next(error); 
+  }
+};
+
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // validate the schema
+    const validatedData = loginSchema.safeParse(req.body);
+
+    if (!validatedData.success) {
+      return next(validatedData.error);
+    }
 
   } catch (error) {
     next(error); 
