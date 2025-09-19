@@ -21,7 +21,7 @@ export const errorHandler = (error: any, req: Request, res: Response, next: Next
         });
     }
 
-    if (error.message === "User not found" ) {
+    if (error.message === "User not found" || error.message === "wrong password") {
         return res.status(401).json({
           success: false,
           message: error.message,
