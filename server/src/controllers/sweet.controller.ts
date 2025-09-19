@@ -37,7 +37,11 @@ export const addSweet = async (req: Request, res: Response, next: NextFunction) 
 export const getAllSweets = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const sweets = await sweetService.getAllSweets();
-    
+    res.json({
+      success:true,
+      message: "Sweets fetched successfully",
+      sweets,
+    });
 
   } catch (error) {
     next(error); 
