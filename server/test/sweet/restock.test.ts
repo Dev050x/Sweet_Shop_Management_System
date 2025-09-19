@@ -37,6 +37,16 @@ describe("Sweet Restock Flow", () => {
     (jwt.verify as Mock).mockReturnValue({ userId: "admin123", role: "ADMIN" });
   });
 
+  const mockRestockedSweet = {
+    id: 1,
+    name: "Chocolate Bar",
+    category: "CHOCOLATE",
+    price: 10.99,
+    quantity: 15, // increased from 10 after restocking 5
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
   // ---------------- Auth middleware tests ----------------
   describe("Authentication middleware", () => {
     it("should fail without authorization header", async () => {
