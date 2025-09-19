@@ -128,4 +128,45 @@ describe("Sweet Restock Flow", () => {
     });
   });
 
+   // ---------------- Controller tests ----------------
+  describe("Controller", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should successfully restock sweet and return correct response", async () => {
+      (sweetService.restockSweet as Mock).mockResolvedValueOnce(mockRestockedSweet);
+
+      const res = await request(app)
+        .post("/api/sweets/1/restock")
+        .set("Authorization", validAdminToken)
+        .send({
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("Sweet restocked successfully");
+      expect(res.body.sweet).toMatchObject({
+        id: 1,
+        name: "Chocolate Bar",
+        quantity: 15, // increased after restocking
+      });
+    });
+
+    it("should return 500 for service errors", async () => {
+      (sweetService.restockSweet as Mock).mockRejectedValueOnce(
+        new Error("Database connection failed")
+      );
+
+      const res = await request(app)
+        .post("/api/sweets/1/restock")
+        .set("Authorization", validAdminToken)
+        .send({
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+
 });
