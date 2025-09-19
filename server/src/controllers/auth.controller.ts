@@ -40,6 +40,11 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       return next(validatedData.error);
     }
 
+    const token = await service.loginUser(
+      validatedData.data.email,
+      validatedData.data.password
+    );
+
   } catch (error) {
     next(error); 
   }
