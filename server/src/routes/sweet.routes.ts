@@ -10,6 +10,7 @@ sweetRouter.post("/", authMiddleware, addSweet);                         //add s
 sweetRouter.get("/", authMiddleware, getAllSweets);                      //get all sweets(user+admin)
 sweetRouter.get("/search", authMiddleware, searchSweets);                //search sweets(user+admin)
 sweetRouter.put("/:id", authMiddleware, isAdmin, updateSweet);           //update sweet details(only admin  )
+sweetRouter.delete("/:id", authMiddleware);                    //delete the sweets (admin only)
 
 
 

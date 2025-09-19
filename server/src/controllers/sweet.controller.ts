@@ -110,3 +110,9 @@ export const updateSweet = async (req: Request, res: Response, next: NextFunctio
   }
 
 };
+
+
+//deleting the sweets(only admin)
+export const deleteSweet = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("request received");
+};
