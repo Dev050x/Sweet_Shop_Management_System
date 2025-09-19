@@ -7,6 +7,8 @@ const sweetRouter = Router();
 
 
 sweetRouter.post("/", authMiddleware, addSweet);                         //add sweets(user+admin)
+sweetRouter.get("/", authMiddleware, getAllSweets);                      //get all sweets(user+admin)
+
 
 
 export default sweetRouter;

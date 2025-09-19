@@ -30,3 +30,10 @@ export const addSweet = async (req: Request, res: Response, next: NextFunction) 
       next(error);
    }
 };
+
+
+
+//get all sweets handler
+export const getAllSweets = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("receiving request");
+};
