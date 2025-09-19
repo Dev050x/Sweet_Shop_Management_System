@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { sweetSchema } from "../schema/sweet.schema";
+import { sweetSchema, sweetSearchSchema } from "../schema/sweet.schema";
 import * as sweetService from "../services/sweet.service";
 
 //add sweet controller
@@ -50,5 +50,20 @@ export const getAllSweets = async (req: Request, res: Response, next: NextFuncti
 
 //search by either name or category or price range
 export const searchSweets = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("listing to controller");
+  try {
+    // validate query params
+    const validatedQuery = sweetSearchSchema.safeParse(req.query);
+    if (!validatedQuery.success) {
+      return next(validatedQuery.error);
+    }
+
+    const sweets = await sweetService.searchSweets(
+      validatedQuery.data.name,
+      validatedQuery.data.category,
+      validatedQuery.data.minPrice,
+      validatedQuery.data.maxPrice
+    );
+
+  } catch (error) {
+  }
 };

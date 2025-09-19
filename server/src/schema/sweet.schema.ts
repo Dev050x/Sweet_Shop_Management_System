@@ -8,3 +8,18 @@ export const sweetSchema = z.object({
   price: z.number().positive("Price must be greater than 0"),
   quantity: z.number().int().nonnegative("Quantity must be >= 0"),
 });
+
+export const sweetSearchSchema = z.object({
+  name: z.string().optional(),
+  category: z.enum(SweetCategory).optional(),
+  minPrice: z
+    .string()
+    .regex(/^\d+(\.\d+)?$/, "minPrice must be a number")
+    .transform(Number)
+    .optional(),
+  maxPrice: z
+    .string()
+    .regex(/^\d+(\.\d+)?$/, "maxPrice must be a number")
+    .transform(Number)
+    .optional(),
+});

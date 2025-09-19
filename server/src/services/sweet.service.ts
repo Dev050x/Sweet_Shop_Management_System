@@ -15,3 +15,13 @@ export const getAllSweets = async () => {
     orderBy: { createdAt: "desc" }, 
   });
 };
+
+//search sweets
+export const searchSweets = async (
+  name?: string,
+  category?: SweetCategory,
+  minPrice?: number,
+  maxPrice?: number
+) => {
+
+};
