@@ -52,5 +52,10 @@ export const updateSweet = async (id: number, data: SweetUpdateInput) => {
 
 //delete sweets
 export const deleteSweet = async (id: number) => {
+  const sweet = await prisma.sweet.findUnique({ where: { id } });
+  if (!sweet) throw new Error("Sweet not found");
 
+  return prisma.sweet.delete({
+    where: { id },
+  });
 };
