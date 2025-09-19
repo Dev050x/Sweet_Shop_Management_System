@@ -4,6 +4,22 @@ import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import app from "../../src/index";
 import { prisma } from "../../src/utils/prisma";
 import * as service from "../../src/services/auth.service";
+import bcrypt from "bcryptjs";
+
+// mock bcrypt
+vi.mock("bcryptjs", () => ({
+  default: { hash: vi.fn(() => Promise.resolve("hashedPass")) }
+}));
+
+// mock prisma inside service
+vi.mock("../../src/utils/prisma", () => ({
+  prisma: {
+    user: {
+      findUnique: vi.fn(),
+      create: vi.fn(),
+    },
+  },
+}));
 
 describe("Auth Registration Test", () => {
   beforeEach(() => {
@@ -46,6 +62,19 @@ describe("Auth Registration Test", () => {
 
 
   describe("Service layer", () => {
+
+    it("should hash password and create user", async () => {
+      // Set up mocks separately
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce(null);
+      (prisma.user.create as Mock).mockResolvedValueOnce({ id: "2", name: "Div", email: "div@example.com", role: "USER" });
+
+      const user = await service.registerUser("Div", "div@example.com", "StrongP@ss1");
+      expect(bcrypt.hash).toHaveBeenCalledWith("StrongP@ss1", 10);
+      expect(prisma.user.create).toHaveBeenCalledWith({
+        data: { name: "Div", email: "div@example.com", password: "hashedPass" }
+      });
+      expect(user.email).toBe("div@example.com");
+    });
 
     it("should throw error if email already exists", async () => {
       (prisma.user.findUnique as Mock).mockResolvedValueOnce({ id: "1", email: "div@example.com" });
