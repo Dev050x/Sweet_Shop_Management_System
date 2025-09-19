@@ -154,5 +154,18 @@ export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextF
 
 //restocking (only admin)
 export const restockSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  const validatedData = sweetRestockSchema.parse(req.body);
+  try {
+    const id = Number(req.params.id);
+
+    // validate request body
+    const validatedData = sweetRestockSchema.parse(req.body);
+
+    const sweet = await sweetService.restockSweet(id, validatedData.quantity);
+    return res.json({
+      success: true,
+    })
+
+  } catch (error) {
+    next(error);
+  }
 };

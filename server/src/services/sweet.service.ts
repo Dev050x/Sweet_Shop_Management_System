@@ -87,3 +87,14 @@ export const purchaseSweet = async (id: number, quantity: number, userId: number
   return updatedSweet;
 
 };
+
+//restocking(only admin)
+export const restockSweet = async (id: number, quantity: number) => {
+  const sweet = await prisma.sweet.findUnique({ where: { id } });
+  if (!sweet) throw new Error("Sweet not found");
+
+  return prisma.sweet.update({
+    where: { id },
+    data: { quantity: sweet.quantity + quantity },
+  });
+};
