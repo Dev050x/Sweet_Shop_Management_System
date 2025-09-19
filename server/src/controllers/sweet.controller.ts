@@ -150,3 +150,9 @@ export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextF
     next(error); 
   }
 };
+
+
+//restocking (only admin)
+export const restockSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  console.log("received request");
+};
