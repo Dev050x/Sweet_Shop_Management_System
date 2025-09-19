@@ -85,6 +85,26 @@ describe("Sweet Purchase Flow", () => {
     });
   });
 
+  // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validToken = "Bearer valid.user.token";
+
+    it("should call purchaseSweet service with correct parameters", async () => {
+      (sweetService.purchaseSweet as Mock).mockResolvedValueOnce(mockPurchasedSweet);
+
+      const res = await request(app)
+        .post("/api/sweets/123/purchase")
+        .set("Authorization", validToken)
+        .send({
+          quantity: 5,
+        });
+
+      expect(sweetService.purchaseSweet).toHaveBeenCalledWith(123, 5, "user123");
+      expect(sweetService.purchaseSweet).toHaveBeenCalledTimes(1);
+    });
+    
+  });
+
 
 
 });
