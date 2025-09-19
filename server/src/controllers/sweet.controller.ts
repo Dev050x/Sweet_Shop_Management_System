@@ -47,3 +47,8 @@ export const getAllSweets = async (req: Request, res: Response, next: NextFuncti
     next(error); 
   }
 };
+
+//search by either name or category or price range
+export const searchSweets = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("listing to controller");
+};
