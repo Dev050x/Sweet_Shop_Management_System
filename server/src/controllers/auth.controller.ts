@@ -15,6 +15,17 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     const user = await service.registerUser(name,email,password);
 
+    return res.status(201).json({
+      success:true,
+      message: "User registered successfully",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
   } catch (error) {
     next(error); 
   }
