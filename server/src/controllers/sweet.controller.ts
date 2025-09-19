@@ -72,6 +72,11 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
         })
     }
 
+    res.json({
+      success:true,
+      message: "Sweets search results",
+      sweets,
+    });
 
   } catch (error) {
   }
