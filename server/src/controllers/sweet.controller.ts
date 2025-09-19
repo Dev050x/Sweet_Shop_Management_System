@@ -140,7 +140,11 @@ export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextF
     const validatedData = sweetPurchaseSchema.parse(req.body);
 
     const sweet = await sweetService.purchaseSweet(id, validatedData.quantity, req.user!.userId);
-    
+    res.json({
+      success:true,
+      message: "Sweet purchased successfully",
+      sweet,
+    });
 
   } catch (error) {
     next(error); 

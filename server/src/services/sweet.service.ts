@@ -69,4 +69,21 @@ export const purchaseSweet = async (id: number, quantity: number, userId: number
   if (sweet.quantity < quantity) {
     throw new Error("Not enough stock available");
   }
+
+  const [updatedSweet, purchaseRecord] = await prisma.$transaction([
+    prisma.sweet.update({
+      where: { id },
+      data: { quantity: sweet.quantity - quantity },
+    }),
+    prisma.purchase.create({
+      data: {
+        userId,
+        sweetId: id,
+        quantity,
+      },
+    }),
+  ]);
+
+  return updatedSweet;
+
 };
