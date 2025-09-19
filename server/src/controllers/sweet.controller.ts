@@ -88,12 +88,17 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
 
 //updating sweet detail()
 export const updateSweet = async (req: Request, res: Response, next: NextFunction) => {
-  const id = Number(req.params.id);
+  try {
+    const id = Number(req.params.id);
+  
+    // validate update body
+    const validatedData = sweetUpdateSchema.safeParse(req.body);
+    if (!validatedData.success) {
+      return next(validatedData.error);
+    }
 
-  // validate update body
-  const validatedData = sweetUpdateSchema.safeParse(req.body);
-  if (!validatedData.success) {
-    return next(validatedData.error);
+  } catch (error) {
+    next(error)
   }
 
     
