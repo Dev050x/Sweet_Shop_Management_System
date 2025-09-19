@@ -187,7 +187,27 @@ describe("Sweet Add Flow", () => {
       });
     });
 
-    
+
+    it("should return 500 for unexpected service errors", async () => {
+      (sweetService.addSweet as Mock).mockRejectedValueOnce(
+        new Error("Unexpected database error")
+      );
+
+      const res = await request(app)
+        .post("/api/sweets")
+        .set("Authorization", validToken)
+        .send({
+          name: "Test Sweet",
+          category: "CHOCOLATE",
+          price: 10.0,
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("internal server error");
+    });
+
+
   });
 
 
