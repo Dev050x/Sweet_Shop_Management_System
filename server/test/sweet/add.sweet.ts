@@ -2,7 +2,8 @@
 import request from "supertest";
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import app from "../../src/index";
-import { prisma } from "../../src/utils/prisma";
+import * as sweetService from "../../src/services/sweet.service";
+import { SweetCategory } from "@prisma/client";
 
 
 // mock jwt for auth middleware
@@ -14,6 +15,21 @@ vi.mock("jsonwebtoken", () => ({
 }));
 
 
+// mock prisma
+vi.mock("../../src/utils/prisma", () => ({
+  prisma: {
+    sweet: {
+      create: vi.fn(),
+    },
+  },
+}));
+
+// mock sweet service
+vi.mock("../../src/services/sweet.service", () => ({
+  addSweet: vi.fn(),
+}));
+
+import { prisma } from "../../src/utils/prisma";
 import jwt from "jsonwebtoken";
 
 describe("Sweet Add Flow", () => {
@@ -79,6 +95,46 @@ describe("Sweet Add Flow", () => {
       expect(res.body.success).toBe(false);
     });
   });
+
+  // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validToken = "Bearer valid.jwt.token";
+    const validSweetData = {
+      name: "Chocolate Bar",
+      category: "CHOCOLATE" as SweetCategory,
+      price: 10.5,
+      quantity: 5,
+    };
+
+    it("should call addSweet service with correct parameters", async () => {
+      const mockSweet = {
+        id: "sweet123",
+        name: "Chocolate Bar",
+        category: "CHOCOLATE" as SweetCategory,
+        price: 10.5,
+        quantity: 5,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      (sweetService.addSweet as Mock).mockResolvedValueOnce(mockSweet);
+
+      const res = await request(app)
+        .post("/api/sweets")
+        .set("Authorization", validToken)
+        .send(validSweetData);
+
+      expect(sweetService.addSweet).toHaveBeenCalledWith(
+        "Chocolate Bar",
+        "CHOCOLATE",
+        10.5,
+        5
+      );
+      expect(sweetService.addSweet).toHaveBeenCalledTimes(1);
+
+    });
+  });
+
 
   });
 
