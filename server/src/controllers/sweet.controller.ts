@@ -161,9 +161,11 @@ export const restockSweet = async (req: AuthRequest, res: Response, next: NextFu
     const validatedData = sweetRestockSchema.parse(req.body);
 
     const sweet = await sweetService.restockSweet(id, validatedData.quantity);
-    return res.json({
-      success: true,
-    })
+    res.json({
+      success:true,
+      message: "Sweet restocked successfully",
+      sweet,
+    });
 
   } catch (error) {
     next(error);
