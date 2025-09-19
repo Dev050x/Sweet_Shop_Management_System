@@ -143,6 +143,26 @@ describe("Sweet Search Flow", () => {
       expect(res.body.message).toBe("there is no sweets");
       expect(res.body.sweets.length).toBe(0);
     });
+
+    it("should return sweets when found", async () => {
+      (sweetService.searchSweets as Mock).mockResolvedValueOnce(mockSweets);
+
+      const res = await request(app)
+        .get("/api/sweets/search?name=chocolate")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe("Sweets search results");
+      expect(res.body.sweets).toHaveLength(2);
+      expect(res.body.sweets[0]).toMatchObject({
+        id: "sweet1",
+        name: "Dark Chocolate",
+        category: "CHOCOLATE",
+        price: 15.99,
+        quantity: 10,
+      });
+    });
+    
   });
 
 
