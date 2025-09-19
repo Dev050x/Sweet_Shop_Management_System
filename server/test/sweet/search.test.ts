@@ -20,6 +20,7 @@ vi.mock("../../src/services/sweet.service", () => ({
 }));
 
 import jwt from "jsonwebtoken";
+import { SweetCategory } from "@prisma/client";
 
 describe("Sweet Search Flow", () => {
   beforeEach(() => {
@@ -28,6 +29,27 @@ describe("Sweet Search Flow", () => {
     (jwt.verify as Mock).mockReturnValue({ userId: "user123", role: "USER" });
   });
 
+  // Mock sweet data for testing
+  const mockSweets = [
+    {
+      id: "sweet1",
+      name: "Dark Chocolate",
+      category: "CHOCOLATE" as SweetCategory,
+      price: 15.99,
+      quantity: 10,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: "sweet2",
+      name: "Milk Chocolate",
+      category: "CHOCOLATE" as SweetCategory,
+      price: 12.99,
+      quantity: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
 
   // ---------------- Auth middleware tests ----------------
   describe("Authentication middleware", () => {
@@ -65,7 +87,7 @@ describe("Sweet Search Flow", () => {
       const res = await request(app)
         .get("/api/sweets/search?name=chocolate&category=CHOCOLATE&minPrice=10&maxPrice=20")
         .set("Authorization", validToken);
-        
+
       expect(sweetService.searchSweets).toHaveBeenCalledWith("chocolate", "CHOCOLATE", 10, 20);
     });
 
@@ -77,5 +99,34 @@ describe("Sweet Search Flow", () => {
       expect(res.status).toBe(400);
     });
   });
+
+  // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validToken = "Bearer valid.jwt.token";
+
+    it("should call searchSweets service with correct parameters", async () => {
+      (sweetService.searchSweets as Mock).mockResolvedValueOnce(mockSweets);
+
+      const res = await request(app)
+        .get("/api/sweets/search?name=dark&category=CHOCOLATE&minPrice=15&maxPrice=30")
+        .set("Authorization", validToken);
+
+      expect(sweetService.searchSweets).toHaveBeenCalledWith("dark", "CHOCOLATE", 15, 30);
+      expect(sweetService.searchSweets).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle service layer errors", async () => {
+      (sweetService.searchSweets as Mock).mockRejectedValueOnce(
+        new Error("Database connection failed")
+      );
+
+      const res = await request(app)
+        .get("/api/sweets/search?name=chocolate")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(500);
+    });
+  });
+
 
 });
