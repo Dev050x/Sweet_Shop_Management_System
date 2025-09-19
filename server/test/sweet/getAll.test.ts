@@ -24,6 +24,10 @@ vi.mock("../../src/utils/prisma", () => ({
   },
 }));
 
+// mock sweet service
+vi.mock("../../src/services/sweet.service", () => ({
+  getAllSweets: vi.fn(),
+}));
 
 
 import jwt from "jsonwebtoken";
@@ -97,6 +101,20 @@ describe("Get All Sweets Flow", () => {
       expect(sweetService.getAllSweets).toHaveBeenCalledTimes(1);
       expect(sweetService.getAllSweets).toHaveBeenCalledWith();
     });
+
+    it("should handle service layer errors", async () => {
+      (sweetService.getAllSweets as Mock).mockRejectedValueOnce(
+        new Error("Database connection failed")
+      );
+
+      const res = await request(app)
+        .get("/api/sweets")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("internal server error");
+    });
+
    });
 
    });
