@@ -2,6 +2,7 @@
 import request from "supertest";
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import app from "../../src/index";
+import * as sweetService from "../../src/services/sweet.service";
 
 // mock JWT for auth middleware
 vi.mock("jsonwebtoken", () => ({
@@ -11,6 +12,20 @@ vi.mock("jsonwebtoken", () => ({
   verify: vi.fn(() => ({ userId: "admin123", role: "ADMIN" })),
 }));
 
+// mock prisma
+vi.mock("../../src/utils/prisma", () => ({
+  prisma: {
+    sweet: {
+      findUnique: vi.fn(),
+      update: vi.fn(),
+    },
+  },
+}));
+
+// mock sweet service
+vi.mock("../../src/services/sweet.service", () => ({
+  restockSweet: vi.fn(),
+}));
 
 
 import jwt from "jsonwebtoken";
@@ -67,7 +82,40 @@ describe("Sweet Restock Flow", () => {
       expect(res.status).toBe(400);
     });
 
-    
+  });
+
+  // ---------------- Service layer tests ----------------
+  describe("Service layer", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should call restockSweet service with correct parameters", async () => {
+      (sweetService.restockSweet as Mock).mockResolvedValueOnce(mockRestockedSweet);
+
+      const res = await request(app)
+        .post("/api/sweets/123/restock")
+        .set("Authorization", validAdminToken)
+        .send({
+          quantity: 10,
+        });
+
+      expect(sweetService.restockSweet).toHaveBeenCalledWith(123, 10);
+      expect(sweetService.restockSweet).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle service layer errors", async () => {
+      (sweetService.restockSweet as Mock).mockRejectedValueOnce(
+        new Error("Sweet not found")
+      );
+
+      const res = await request(app)
+        .post("/api/sweets/999/restock")
+        .set("Authorization", validAdminToken)
+        .send({
+          quantity: 5,
+        });
+
+      expect(res.status).toBe(500);
+    });
   });
 
 });
