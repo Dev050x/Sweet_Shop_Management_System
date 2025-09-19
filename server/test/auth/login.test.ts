@@ -15,6 +15,16 @@ vi.mock("bcryptjs", () => ({
   compare: vi.fn(() => Promise.resolve(true)), // for named import
 }));
 
+// mock jwt
+vi.mock("jsonwebtoken", () => ({
+  default: {
+    sign: vi.fn(() => "mocked.jwt.token"),
+    verify: vi.fn(() => ({ userId: "2", role: "USER" })),
+  },
+  sign: vi.fn(() => "mocked.jwt.token"), // for named import
+  verify: vi.fn(() => ({ userId: "2", role: "USER" })), // for named import
+}));
+
 // mock prisma
 vi.mock("../../src/utils/prisma", () => ({
   prisma: {
@@ -25,6 +35,7 @@ vi.mock("../../src/utils/prisma", () => ({
 }));
 
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 describe("Auth Login Flow", () => {
   beforeEach(() => {
@@ -72,6 +83,27 @@ describe("Auth Login Flow", () => {
       await expect(service.loginUser("div@example.com", "wrongPass"))
         .rejects.toThrow("wrong password");
     });
+
+    it("should return jwt token on valid credentials", async () => {
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce({
+        id: "1",
+        email: "div@example.com",
+        password: "hashedPass",
+        role: "USER",
+      });
+      (bcrypt.compare as Mock).mockResolvedValueOnce(true);
+      (jwt.sign as Mock).mockReturnValueOnce("valid.jwt.token");
+
+      const token = await service.loginUser("div@example.com", "StrongP@ss1");
+      expect(bcrypt.compare).toHaveBeenCalled();
+      expect(jwt.sign).toHaveBeenCalledWith(
+        { userId: "1", role: "USER" },
+        expect.any(String),
+        { expiresIn: "1d" }
+      );
+      expect(token).toBe("valid.jwt.token");
+    });
+
   });
 
 
