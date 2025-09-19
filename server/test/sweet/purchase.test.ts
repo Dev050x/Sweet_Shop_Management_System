@@ -102,7 +102,22 @@ describe("Sweet Purchase Flow", () => {
       expect(sweetService.purchaseSweet).toHaveBeenCalledWith(123, 5, "user123");
       expect(sweetService.purchaseSweet).toHaveBeenCalledTimes(1);
     });
-    
+
+    it("should handle service layer errors (insufficient stock)", async () => {
+      (sweetService.purchaseSweet as Mock).mockRejectedValueOnce(
+        new Error("Not enough stock available")
+      );
+
+      const res = await request(app)
+        .post("/api/sweets/1/purchase")
+        .set("Authorization", validToken)
+        .send({
+          quantity: 100,
+        });
+
+      expect(res.status).toBe(500);
+    });
+
   });
 
 
