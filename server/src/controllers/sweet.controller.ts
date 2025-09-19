@@ -12,14 +12,19 @@ export const addSweet = async (req: Request, res: Response, next: NextFunction) 
       return next(validatedData.error);
     }
 
-    //calling service
-     // call service to add sweet
+    // call service to add sweet
     const sweet = await sweetService.addSweet(
       validatedData.data.name,
       validatedData.data.category,
       validatedData.data.price,
       validatedData.data.quantity
     );
+
+    res.status(201).json({
+      success:true,
+      message: "Sweet added successfully",
+      sweet,
+    });
 
    } catch (error) {
       next(error);
