@@ -49,6 +49,24 @@ describe("Sweet Restock Flow", () => {
       expect(res.status).toBe(403);
       expect(res.body.error).toBe("Forbidden: Admins only");
     });
+
+  });
+
+   // ---------------- Schema validation ----------------
+  describe("Schema validation", () => {
+    const validAdminToken = "Bearer valid.admin.token";
+
+    it("should fail with invalid quantity (negative)", async () => {
+      const res = await request(app)
+        .post("/api/sweets/1/restock")
+        .set("Authorization", validAdminToken)
+        .send({
+          quantity: -3, // Invalid negative quantity
+        });
+
+      expect(res.status).toBe(400);
+    });
+
     
   });
 
