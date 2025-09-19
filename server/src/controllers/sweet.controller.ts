@@ -133,10 +133,16 @@ export const deleteSweet = async (req: Request, res: Response, next: NextFunctio
 
 //purchase sweet handler
 export const purchaseSweet = async (req: AuthRequest, res: Response, next: NextFunction) => {
-   const id = Number(req.params.id);
+   try {
+    const id = Number(req.params.id);
 
     // validate purchase body
     const validatedData = sweetPurchaseSchema.parse(req.body);
 
-    await sweetService.purchaseSweet(id, validatedData.quantity, req.user!.userId);
+    const sweet = await sweetService.purchaseSweet(id, validatedData.quantity, req.user!.userId);
+    
+
+  } catch (error) {
+    next(error); 
+  }
 };

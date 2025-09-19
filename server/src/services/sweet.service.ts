@@ -63,5 +63,10 @@ export const deleteSweet = async (id: number) => {
 
 //purchase sweets
 export const purchaseSweet = async (id: number, quantity: number, userId: number) => {
+  const sweet = await prisma.sweet.findUnique({ where: { id } });
+  if (!sweet) throw new Error("Sweet not found");
 
+  if (sweet.quantity < quantity) {
+    throw new Error("Not enough stock available");
+  }
 };
