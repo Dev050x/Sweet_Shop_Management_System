@@ -32,6 +32,16 @@ describe("Auth Registration Test", () => {
       expect(res.body.success).toBe(false);
     });
 
+    it("should fail if name too short", async () => {
+      const res = await request(app).post("/api/auth/register").send({
+        name: "D",
+        email: "div@example.com",
+        password: "StrongP@ss1"
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
   });
 
 });
