@@ -11,6 +11,10 @@ vi.mock("jsonwebtoken", () => ({
     verify: vi.fn(() => ({ userId: "user123", role: "USER" })),
   },
 }));
+// mock sweet service
+vi.mock("../../src/services/sweet.service", () => ({
+  purchaseSweet: vi.fn(),
+}));
 
 // mock prisma
 vi.mock("../../src/utils/prisma", () => ({
