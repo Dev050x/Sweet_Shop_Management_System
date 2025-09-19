@@ -97,10 +97,16 @@ export const updateSweet = async (req: Request, res: Response, next: NextFunctio
       return next(validatedData.error);
     }
 
+    const sweet = await sweetService.updateSweet(id, validatedData.data);
+
+    res.json({
+      success:true,
+      message: "Sweet updated successfully",
+      sweet,
+    });
+
   } catch (error) {
     next(error)
   }
-
-    
 
 };
