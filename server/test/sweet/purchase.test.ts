@@ -120,6 +120,44 @@ describe("Sweet Purchase Flow", () => {
 
   });
 
+  // ---------------- Controller test----------------
+  describe("Controller", () => {
+    const validToken = "Bearer valid.user.token";
 
+    it("should successfully purchase sweet and return correct response", async () => {
+      (sweetService.purchaseSweet as Mock).mockResolvedValueOnce(mockPurchasedSweet);
+
+      const res = await request(app)
+        .post("/api/sweets/1/purchase")
+        .set("Authorization", validToken)
+        .send({
+          quantity: 2,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("Sweet purchased successfully");
+      expect(res.body.sweet).toMatchObject({
+        id: 1,
+        name: "Chocolate Bar",
+        quantity: 8, // reduced after purchase
+      });
+    });
+
+    it("should return 500 for service errors", async () => {
+      (sweetService.purchaseSweet as Mock).mockRejectedValueOnce(
+        new Error("Sweet not found")
+      );
+
+      const res = await request(app)
+        .post("/api/sweets/999/purchase")
+        .set("Authorization", validToken)
+        .send({
+          quantity: 1,
+        });
+
+      expect(res.status).toBe(500);
+    });
+  });
 
 });
