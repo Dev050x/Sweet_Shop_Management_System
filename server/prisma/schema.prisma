@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases Purchase[]      // => 1 user can have multiple purchase(1-n)
+}
+
+model Sweet {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  SweetCategory
+  price     Float
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchases Purchase[]     // => sweet purchase details
+}
+
+//Purchase record
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  sweetId   Int
+  quantity  Int
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  sweet Sweet @relation(fields: [sweetId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SweetCategory {
+  CHOCOLATE
+  CANDY
+  PASTRY
+  ICECREAM
+  BEVERAGE
+  CAKE
+  COOKIE
+}

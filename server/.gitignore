@@ -1,0 +1,31 @@
+# Node.js dependencies
+node_modules/
+
+# TypeScript build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# Environment variables
+.env
+
+# Prisma
+# prisma/generated/
+# prisma/migrations/   <-- keep tracked for version control
+
+# Test coverage & reports
+coverage/
+.nyc_output/
+.vitest/
+jest-*
+
+
