@@ -162,7 +162,19 @@ describe("Sweet Search Flow", () => {
         quantity: 10,
       });
     });
-    
+
+    it("should return 500 for unexpected service errors", async () => {
+      (sweetService.searchSweets as Mock).mockRejectedValueOnce(
+        new Error("Unexpected database error")
+      );
+
+      const res = await request(app)
+        .get("/api/sweets/search?name=chocolate")
+        .set("Authorization", validToken);
+
+      expect(res.status).toBe(500);
+    });
+
   });
 
 
