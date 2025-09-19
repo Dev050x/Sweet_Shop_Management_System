@@ -175,7 +175,7 @@ describe("Sweet Update Flow", () => {
       expect(sweetService.updateSweet).toHaveBeenCalledWith(1, updateData);
       expect(sweetService.updateSweet).toHaveBeenCalledTimes(1);
     });
-    
+
     it("should handle service layer errors (sweet not found)", async () => {
       (sweetService.updateSweet as Mock).mockRejectedValueOnce(
         new Error("Sweet not found")
@@ -194,6 +194,57 @@ describe("Sweet Update Flow", () => {
 
     });
 
+  // ---------------- Controller tests ----------------
+  describe("Controller", () => {
+    const validAdminToken = "Bearer valid.admin.token";
 
+    it("should successfully update sweet and return correct response", async () => {
+      (sweetService.updateSweet as Mock).mockResolvedValueOnce(mockUpdatedSweet);
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", validAdminToken)
+        .send({
+          name: "Updated Chocolate",
+          category: "CHOCOLATE",
+          price: 12.99,
+          quantity: 8,
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.message).toBe("Sweet updated successfully");
+      expect(res.body.sweet).toMatchObject({
+        id: 1,
+        name: "Updated Chocolate",
+        category: "CHOCOLATE",
+        price: 12.99,
+        quantity: 8,
+      });
+    });
+
+    it("should handle partial updates (only some fields)", async () => {
+      const partialUpdateSweet = {
+        ...mockUpdatedSweet,
+        name: "Partially Updated Sweet",
+      };
+
+      (sweetService.updateSweet as Mock).mockResolvedValueOnce(partialUpdateSweet);
+
+      const res = await request(app)
+        .put("/api/sweets/1")
+        .set("Authorization", validAdminToken)
+        .send({
+          name: "Partially Updated Sweet",
+        });
+        console.log(res.body);
+
+      expect(res.status).toBe(200);
+      expect(res.body.sweet.name).toBe("Partially Updated Sweet");
+      expect(sweetService.updateSweet).toHaveBeenCalledWith(1, {
+        name: "Partially Updated Sweet",
+      });
+    });
+  });
 
 });
