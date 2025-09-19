@@ -84,3 +84,9 @@ export const searchSweets = async (req: Request, res: Response, next: NextFuncti
 
 
 };
+
+
+//updating sweet detail()
+export const updateSweet = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("request received");
+};
