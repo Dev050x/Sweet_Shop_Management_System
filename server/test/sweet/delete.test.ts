@@ -88,6 +88,18 @@ describe("Sweet Delete Flow", () => {
       
     });
 
+    it("should handle service layer errors", async () => {
+      (sweetService.deleteSweet as Mock).mockRejectedValueOnce(
+        new Error("Sweet not found")
+      );
+
+      const res = await request(app)
+        .delete("/api/sweets/999")
+        .set("Authorization", validAdminToken);
+
+      expect(res.status).toBe(500);
+    });
+
   });
 
 
