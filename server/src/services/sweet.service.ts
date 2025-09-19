@@ -1,6 +1,7 @@
 import {prisma} from "../utils/prisma";
 import { SweetCategory } from "@prisma/client";
 
+
 //add sweets 
 export const addSweet = async (name: string, category: SweetCategory, price: number, quantity: number) => {
   return prisma.sweet.create({
@@ -34,4 +35,10 @@ export const searchSweets = async (
     },
     orderBy: { createdAt: "desc" },
   });
+};
+
+
+//update sweets details(name/category only)
+export const updateSweet = async () => {
+
 };

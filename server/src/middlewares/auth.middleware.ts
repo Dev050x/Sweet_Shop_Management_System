@@ -40,3 +40,10 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
         });
     }
 };
+
+export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (req.user?.role !== "ADMIN") {
+        return res.status(403).json({ error: "Forbidden: Admins only" });
+    }
+    next();
+};
