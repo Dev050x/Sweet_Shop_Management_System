@@ -104,52 +104,73 @@ export default function Dashboard() {
   }, [sweets]);
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2>Delicious Sweets Collection</h2>
-      The Sweeter Way to Manage Your Shop
-      <div style={{ marginBottom: 12 }}>
-        <input
-          placeholder="Search by name"
-          value={nameFilter}
-          onChange={e => setNameFilter(e.target.value)}
-        />
+    <div className="min-h-screen bg-gradient-to-b from-[#BCC7DC] to-[#F2F4F7] p-4">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-[#0D3253] mb-2">Delicious Sweets Collection</h2>
+        <p className="text-[#3E4C65] mb-6">The Sweeter Way to Manage Your Shop</p>
 
-        <select
-          value={categoryFilter}
-          onChange={e => setCategoryFilter(e.target.value)}
-          style={{ marginLeft: 8 }}
-        >
-          {categories.map(c => <option key={c} value={c}>{c}</option>)}
-        </select>
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 mb-6 shadow-sm border border-[#DDDDDD]">
+          <div className="flex flex-wrap gap-4 items-center">
+            <input
+              placeholder="Search by name"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+              className="px-3 py-2 border border-[#DDDDDD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5CC5D5] focus:border-transparent"
+            />
 
-        {/* Range slider: two range inputs (min & max). values default to domain when sweets load */}
-        <div style={{ display: "inline-block", marginLeft: 12, verticalAlign: "middle" }}>
-          <div>Price range: {sliderMin ?? priceDomain.min} — {sliderMax ?? priceDomain.max}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <input
-              type="range"
-              min={priceDomain.min}
-              max={priceDomain.max}
-              value={sliderMin ?? priceDomain.min}
-              onChange={e => onChangeMin(Number(e.target.value))}
-            />
-            <input
-              type="range"
-              min={priceDomain.min}
-              max={priceDomain.max}
-              value={sliderMax ?? priceDomain.max}
-              onChange={e => onChangeMax(Number(e.target.value))}
-            />
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-3 py-2 border border-[#DDDDDD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5CC5D5] focus:border-transparent bg-white"
+            >
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            {/* Range slider: two range inputs (min & max). values default to domain when sweets load */}
+            <div className="flex flex-col gap-2">
+              <div className="text-sm text-[#333333]">
+                Price range: {sliderMin ?? priceDomain.min} — {sliderMax ?? priceDomain.max}
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min={priceDomain.min}
+                  max={priceDomain.max}
+                  value={sliderMin ?? priceDomain.min}
+                  onChange={(e) => onChangeMin(Number(e.target.value))}
+                  className="accent-[#5CC5D5]"
+                />
+                <input
+                  type="range"
+                  min={priceDomain.min}
+                  max={priceDomain.max}
+                  value={sliderMax ?? priceDomain.max}
+                  onChange={(e) => onChangeMax(Number(e.target.value))}
+                  className="accent-[#5CC5D5]"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={() => fetchSweets()}
+              className="px-4 py-2 bg-[#0D3253] text-white rounded-md hover:bg-[#3E4C65] transition-colors"
+            >
+              Refresh
+            </button>
           </div>
         </div>
 
-        <button onClick={() => fetchSweets()} style={{ marginLeft: 8 }}>Refresh</button>
-      </div>
-
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {displayed.length === 0 ? <div>No sweets found</div> : displayed.map((s: Sweet) =>
-          <SweetCard key={s.id} sweet={s} onPurchase={handlePurchase} />
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {displayed.length === 0 ? (
+            <div className="col-span-full text-center text-[#333333] py-8">No sweets found</div>
+          ) : (
+            displayed.map((s: Sweet) => <SweetCard key={s.id} sweet={s} onPurchase={handlePurchase} />)
+          )}
+        </div>
       </div>
     </div>
   );
