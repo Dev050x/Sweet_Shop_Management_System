@@ -121,6 +121,13 @@ root/
 
 Follow the steps below to set up the project locally.
 
+📥 Clone the repository
+```bash
+git clone https://github.com/Dev050x/Sweet_Shop_Management_System.git
+cd Sweet_Shop_Management_System
+```
+
+
 
 ### 🔧 Backend Setup
 
@@ -239,6 +246,23 @@ Each AI assistant was used for a specific purpose:
 
 - 📖 **Documentation** → *GPT-5*  
   Generated project documentation, including **README.md**, API endpoints, and setup instructions.  
+
+---
+
+## 🚀 CI/CD Pipeline
+
+This project uses **GitHub Actions** for continuous integration and testing.
+
+![CI/CD Pipeline](https://github.com/Dev050x/Sweet_Shop_Management_System/actions/workflows/test.yml/badge.svg)
+
+### What it does
+- ✅ Runs on every **push** and **pull request** to `main`
+- 🛠 Installs backend dependencies (`npm install`, `prisma generate`)
+- 🔎 Runs automated tests with **Vitest + Supertest**
+- 🧹 Ensures code quality before merging to `main`
+
+You can view the latest pipeline runs here:  
+👉 [GitHub Actions – CI/CD Pipeline](https://github.com/Dev050x/Sweet_Shop_Management_System/actions/workflows/test.yml)
 
 ---
 
