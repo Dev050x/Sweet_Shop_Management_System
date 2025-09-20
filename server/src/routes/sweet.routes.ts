@@ -6,7 +6,7 @@ import { authMiddleware, isAdmin } from "../middlewares/auth.middleware";
 const sweetRouter = Router();
 
 
-sweetRouter.post("/", authMiddleware, addSweet);                         //add sweets(user+admin)
+sweetRouter.post("/", authMiddleware, isAdmin,addSweet);                         //add sweets(user)
 sweetRouter.get("/", authMiddleware, getAllSweets);                      //get all sweets(user+admin)
 sweetRouter.get("/search", authMiddleware, searchSweets);                //search sweets(user+admin)
 sweetRouter.put("/:id", authMiddleware, isAdmin, updateSweet);           //update sweet details(only admin  )
