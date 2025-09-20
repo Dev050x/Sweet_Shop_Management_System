@@ -1,12 +1,22 @@
-import './App.css'
+import  { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context /AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
-function App() {
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 
+export default function App(){
   return (
-    <>
-       Hello world from react application
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register/>} />
+          </Routes>
+        </Suspense>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
-
-export default App
