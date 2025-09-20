@@ -144,7 +144,6 @@ describe("Auth Login Flow", () => {
         email: "div@example.com",
         password: "StrongP@ss1",
       });
-      console.log(res.body);
       expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
     });
