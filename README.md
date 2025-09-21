@@ -37,7 +37,7 @@ Example commit flow:
 
 - 🎨 **Frontend Experience**  
   - Responsive UI built with Tailwind CSS   
-  - Context-based state management for authentication and sweets  
+  - Context API for state management
 
 - ⚙️ **Backend API**  
   - Express.js RESTful API with modular routes and services  
@@ -65,7 +65,7 @@ Example commit flow:
 - Node.js with Express.js  
 - TypeScript for type safety  
 - Prisma ORM for database operations (PostgreSQL)  
-- JWT for authentication & authorization  
+- JWT for authentication & authorization  (change needed)
 - Zod for schema validation  
 - dotenv for environment configuration  
 - CORS middleware for cross-origin support  
@@ -271,9 +271,18 @@ You can view the latest pipeline runs here:
 The project follows **Test-Driven Development (TDD)** using **Vitest + Supertest**.  
 
 ### 📊 Test Results
-![Test Report](./images/testing-report.png)
+![Test Report](./ui/testing-report.png)
 
 ---
+
+## 🎨 Ui Images
+
+![Ui Images](./ui/sign-up.png)
+![Ui Images](./ui/login.png)
+![Ui Images](./ui/dashboard.png)
+![Ui Images](./ui/admin-panel.png)
+![Ui Images](./ui/purchase-sweet.png)
+
 ## 👨‍💻 Author
 
 **Div Patel**  
