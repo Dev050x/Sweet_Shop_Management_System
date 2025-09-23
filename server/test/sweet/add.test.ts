@@ -36,7 +36,7 @@ describe("Sweet Add Flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Set default JWT behavior for auth middleware
-    (jwt.verify as Mock).mockReturnValue({ userId: "user123", role: "USER" });
+    (jwt.verify as Mock).mockReturnValue({ userId: "user123", role: "ADMIN" });
   });
 
   // ---------------- Auth middleware tests ----------------
