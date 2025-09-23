@@ -43,7 +43,7 @@ model Purchase {
   userId    Int
   sweetId   Int
   quantity  Int
-  totalCost Int
+  totalCost Float
   createdAt DateTime @default(now())
 
   user  User  @relation(fields: [userId], references: [id])

@@ -80,6 +80,7 @@ export const purchaseSweet = async (id: number, quantity: number, userId: number
         userId,
         sweetId: id,
         quantity,
+        totalCost: quantity * sweet.price
       },
     }),
   ]);
