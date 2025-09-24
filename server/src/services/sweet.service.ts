@@ -62,13 +62,22 @@ export const deleteSweet = async (id: number) => {
 
 
 //purchase sweets
-export const purchaseSweet = async (id: number, quantity: number, userId: number) => {
+export const purchaseSweet = async (id: number, quantity: number, userId: number, code?: string) => {
   const sweet = await prisma.sweet.findUnique({ where: { id } });
   if (!sweet) throw new Error("Sweet not found");
 
   if (sweet.quantity < quantity) {
     throw new Error("Not enough stock available");
   }
+  let discount;
+  if(code){
+    let voucher = await prisma.voucher.findUnique({ where: { code } });
+    if(!voucher) throw new Error("Voucher not found");
+    if(!voucher.isActive) throw new Error("Voucher is not active");
+    discount = voucher.discount;
+  } 
+  let discounted_price = sweet.price - discount;
+  let total_cost = discounted_price * quantity;
 
   const [updatedSweet, purchaseRecord] = await prisma.$transaction([
     prisma.sweet.update({
@@ -80,7 +89,7 @@ export const purchaseSweet = async (id: number, quantity: number, userId: number
         userId,
         sweetId: id,
         quantity,
-        totalCost: quantity * sweet.price
+        totalCost: total_cost,
       },
     }),
   ]);
